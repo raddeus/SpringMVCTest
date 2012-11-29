@@ -24,52 +24,44 @@ public class ChampIconDownloader {
 			champName = champName.replace(".", "").toLowerCase();
 			champName = champName.replace("'", "");
 			String champOutName = champName.replace("-", "_").toUpperCase();
-			
+
 			URL url = null;
 			try {
-				url = new URL("http://edge1.mobafire.com/images/champion/icon/"+champName+".png");
+				url = new URL("http://edge1.mobafire.com/images/champion/icon/"
+						+ champName + ".png");
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			
-			
-					URLConnection urlConnection;
-					try {
-						urlConnection = url.openConnection();
+			URLConnection urlConnection;
+			try {
+				urlConnection = url.openConnection();
+				BufferedInputStream in = new BufferedInputStream(
+						urlConnection.getInputStream());
+				File outFile = new File(System.getProperty("user.home")
+						+ "/champIcons/" + champOutName + ".png");
+				System.out.println("Path: " + outFile.getAbsolutePath());
+				if (!outFile.exists()) {
+					new File(outFile.getParent()).mkdirs();
+					outFile.createNewFile();
+				}
+				BufferedOutputStream out = new BufferedOutputStream(
+						new FileOutputStream(outFile));
+				int i;
+				while ((i = in.read()) != -1) {
+					out.write(i);
+				}
+				out.flush();
 
+				out.close();
+				in.close();
 
-		// creating the input stream from google image
-		BufferedInputStream in = new BufferedInputStream(urlConnection.getInputStream());
-		// my local file writer, output stream
-		File outFile = new File( System.getProperty("user.home")+"/champIcons/"+champOutName+".png" );
-		System.out.println("Path: "+outFile.getAbsolutePath());
-		if (!outFile.exists()){
-			new File(outFile.getParent()).mkdirs();
-			outFile.createNewFile();
+			} catch (IOException e) {
+				System.out.println("Error saving champion: " + champName
+						+ " : ");
+				e.printStackTrace();
+			}
 		}
-		BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream( outFile));
-
-		// until the end of data, keep saving into file.
-		int i;
-		while ((i = in.read()) != -1) {
-		    out.write(i);
-		}
-		out.flush();
-
-		// closing all the shits
-		out.close();
-		in.close();
-			
-							} catch (IOException e) {
-								System.out.println("Error saving champion: "+champName+" : ");
-								e.printStackTrace();
-					}	
-		}
-
-		
-
 
 	}
 
